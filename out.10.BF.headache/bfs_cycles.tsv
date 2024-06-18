@@ -1,0 +1,5 @@
+"day"	"time"	"treatment"	"measurement"	"group"	"severity"	"delta_severity"	"log_bf"
+1	24	"none"	"three"	"placebo"	0.654485049833887	0.43	-2.2324732906077447
+2	24	"none"	"three"	"SMS"	0.463333333333333	-0.22	-1.8437780219929234
+3	24	"none"	"three"	"placebo"	0.803225806451613	0.62	0.35546882632599264
+4	24	"none"	"three"	"SMS"	0.300653594771242	-0.02	2.546254540336033
