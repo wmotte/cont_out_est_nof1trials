@@ -170,10 +170,10 @@ all[ all$treatment == 'on', 'marker' ] <- 0.3
 # plot update in seizure reduction
 p <- ggplot( data = all ) + 
     geom_ribbon( aes( x = month, y = median, ymin = CI_low, ymax = CI_high ), fill = 'gray80' ) + 
-    geom_line( aes( x = month, y = median ), size = 1.1 ) +
+    geom_line( aes( x = month, y = median ), linewidth = 1.1 ) +
     geom_ribbon( aes( x = month, ymin = 0, ymax = marker ), fill = '#E69F00', alpha = 0.5 ) +
     geom_line( aes( x = month, y = marker ), colour = 'orange', linetype = 2 ) +
-    ylab( "Reduced seizures" ) +
+    ylab( "Estimated change" ) +
     xlab( 'Time (month)' ) +
     scale_x_continuous( breaks = number_ticks( 20 ) ) +
     scale_y_continuous( breaks = number_ticks( 10 ) ) +

@@ -77,22 +77,28 @@ dir.create( outdir, showWarnings = FALSE )
 head( df <- get_data() )
 
 # make subsets
-data_set_1 <- df[ df$month <= 12, ]
-data_set_2 <- df[ df$month <= 24, ]
-data_set_3 <- df[ df$month <= 48, ]
+data_set_1 <- df[ df$month <= 6, ]
+data_set_2 <- df[ df$month <= 12, ]
+data_set_3 <- df[ df$month <= 24, ]
+data_set_4 <- df[ df$month <= 28, ]
+data_set_5 <- df[ df$month <= 48, ]
 
 # get BFs
-bf1 <- get_bayes_factor( data_set_1 )
-bf2 <- get_bayes_factor( data_set_2 )
-bf3 <- get_bayes_factor( data_set_3 )
+bf1 <- get_bayes_factor( data_set_1 ) #  3.64 log(BF)
+bf2 <- get_bayes_factor( data_set_2 ) #  9.24 log(BF)
+bf3 <- get_bayes_factor( data_set_3 ) # 21.21 log(BF)
+bf4 <- get_bayes_factor( data_set_4 ) # 14.62 log(BF)
+bf5 <- get_bayes_factor( data_set_5 ) #  8.40 log(BF)
 
 # combine
 container1 <- rbind( bf1, bf2 )
-container <- rbind( container1, bf3 )
+container2 <- rbind( bf3, bf4 )
+container3 <- rbind( container1, container2 )
+container <- rbind( container3, bf5 )
 
 # print
 print( round( container$log_bf, 1 ) )
-
+rownames( container ) <- NULL
 # write to file
 readr::write_tsv( container, file = paste0( outdir, '/bfs_cycles.tsv' ), quote = 'all' )
 
