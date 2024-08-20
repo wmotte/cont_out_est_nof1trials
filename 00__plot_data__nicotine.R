@@ -90,3 +90,15 @@ p_blind <- ggplot( data = df_blinded, aes( x = time, y = seizures, fill = treatm
 
 # save
 ggsave( plot = p_blind, file = paste0( outdir, '/plot_nicotine_blinded.png' ), dpi = 600, height = 2, width = 6 )
+
+p2 <- p_blind +
+    geom_vline( xintercept = 0.5 + 7 * 2, linetype = 2, colour = 'gray50' ) + 
+    geom_vline( xintercept = 0.5 + 7 * 4, linetype = 2, colour = 'gray50' ) +
+    geom_vline( xintercept = 0.5 + 7 * 6, linetype = 2, colour = 'gray50' ) + 
+    geom_vline( xintercept = 0.5 + 7 * 8, linetype = 2, colour = 'gray50' ) +
+    geom_vline( xintercept = 0.5 + 7 * 10, linetype = 2, colour = 'gray50' ) +
+    geom_vline( xintercept = 0.5 + 7 * 12, linetype = 2, colour = 'gray50' )
+
+# save
+ggsave( plot = p2, file = paste0( outdir, '/plot_nicotine_blinded__with_lines.png' ), dpi = 600, height = 2, width = 6 )
+
