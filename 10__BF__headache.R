@@ -41,11 +41,18 @@ get_data <- function()
 ##
 get_bayes_factor <- function( data )
 {
+    # truncate gamma and normal priors for the intercept and slope within reasonable 
+    # severity ranges (0-1 for intercept and -1 to +1 for group) 
+    priors <- c(
+        prior( gamma( 2, 3 ), class = "Intercept", lb = 0, ub = 1 ),
+        prior( normal( 0, 5 ), class = "b", lb = -1, ub = 1 )  
+    )
+    
     # fit Bayesian model (treatment)
     # refresh = 0 turns off iteration info print
-    bmodel_H1 <- brms::brm( delta_severity ~ group, data = data, 
-                            prior = prior( normal( 0, 5 ), class = b ),
+    bmodel_H1 <- brms::brm( delta_severity ~ group, data = data,
                             iter = 25000, warmup = 3000,
+                            prior = priors,
                             save_pars = save_pars( all = TRUE ), refresh = 0 )
     
     # update Bayesian model [H0], with intercept only
@@ -99,6 +106,7 @@ container2 <- rbind( bf3, bf4 )
 container <- rbind( container1, container2 )
 
 # print
+# log(BF): -0.4, -0.2, 2.1, 4.3
 print( round( container$log_bf, 1 ) )
 
 # write to file

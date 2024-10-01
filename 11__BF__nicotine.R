@@ -48,26 +48,22 @@ get_data <- function()
 ##
 get_bayes_factor <- function( data )
 {
+    # truncate normal priors for the intercept and slope within reasonable seizure loads 
+    priors <- c(
+        prior( normal( 0, 100 ), class = "Intercept", lb = -10, ub = 10 ),
+        prior( normal( 0, 100 ), class = "b", lb = -5, ub = 5 )  
+    )
     
     # fit Bayesian Poisson model (treatment)
     bmodel_H1 <- brms::brm( seizures ~ treatment, data = data, 
                             iter = 25000, warmup = 3000,
                             family = poisson(), 
+                            prior = priors,
                             save_pars = save_pars( all = TRUE ), refresh = 0 )
     
     # update Bayesian Poisson model [H0], with intercept only
     bmodel_H0 <- update( bmodel_H1, formula = seizures ~ 1, refresh = 0 ) 
-    
-    # get summary and parameters
-    #summary( bmodel_H1 )
-    #summary( bmodel_H0 )
-    
-    #prior_summary( bmodel_H1 )
-    #prior_summary( bmodel_H0 )
-    
-    #posterior_summary( bmodel_H1 )
-    #posterior_summary( bmodel_H0 )
-    
+
     # Bayes Factor, through bridge sampling
     BF_brms_bridge <- brms::bayes_factor( bmodel_H1, bmodel_H0, log = TRUE )
     
@@ -83,7 +79,7 @@ get_bayes_factor <- function( data )
 # CUSTOM FUNCTIONS                                                             #
 ################################################################################
 
-
+# output dir
 outdir <- 'out.11.BF.nicotine'
 dir.create( outdir, showWarnings = FALSE )
 
@@ -100,16 +96,14 @@ set.seed( 111 )
 data_first <- df[ df$period == 'first', ]
 data_second <- df
 
-
+# get bf's
 bf1 <- get_bayes_factor( data_first )
 bf2 <- get_bayes_factor( data_second )
 
 container <- rbind( bf1, bf2 )
 
-# print
+# print [4.3, 18.0]
 print( round( container$log_bf, 1 ) )
 
 # write to file
 readr::write_tsv( container, file = paste0( outdir, '/bfs_cycles.tsv' ), quote = 'all' )
-
-

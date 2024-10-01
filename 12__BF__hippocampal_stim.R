@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 #
 # Wim Otte (w.m.otte@umcutrecht.nl)
-# 9 February 2024
+# Oct 1, 2024
 #
 ################################################################################
 library( 'readr' ) # read and write (large) tsv-files
@@ -39,10 +39,17 @@ get_data <- function()
 ##
 get_bayes_factor <- function( data )
 {
+    # truncate normal priors for the intercept and slope within reasonable seizure loads 
+    priors <- c(
+        prior( normal( 0, 100 ), class = "Intercept", lb = -10, ub = 10 ),
+        prior( normal( 0, 100 ), class = "b", lb = -5, ub = 5 )  
+    )
+    
     # fit Bayesian Poisson model (treatment)
     bmodel_H1 <- brms::brm( seizures ~ treatment, data = data, 
                             iter = 25000, warmup = 3000,
                             family = poisson(), 
+                            prior = priors,
                             save_pars = save_pars( all = TRUE ), refresh = 0 )
     
     # update Bayesian Poisson model [H0], with intercept only
@@ -65,10 +72,9 @@ get_bayes_factor <- function( data )
 # CUSTOM FUNCTIONS                                                             #
 ################################################################################
 
-
 set.seed( 565 )
 
-
+# out dir
 outdir <- 'out.12.BF.hippocampal.stim'
 dir.create( outdir, showWarnings = FALSE )
 
@@ -84,11 +90,11 @@ data_set_4 <- df[ df$month <= 28, ]
 data_set_5 <- df[ df$month <= 48, ]
 
 # get BFs
-bf1 <- get_bayes_factor( data_set_1 ) #  3.64 log(BF)
-bf2 <- get_bayes_factor( data_set_2 ) #  9.24 log(BF)
-bf3 <- get_bayes_factor( data_set_3 ) # 21.21 log(BF)
-bf4 <- get_bayes_factor( data_set_4 ) # 14.62 log(BF)
-bf5 <- get_bayes_factor( data_set_5 ) #  8.40 log(BF)
+bf1 <- get_bayes_factor( data_set_1 ) #  X log(BF)
+bf2 <- get_bayes_factor( data_set_2 ) #  X log(BF)
+bf3 <- get_bayes_factor( data_set_3 ) #  X log(BF)
+bf4 <- get_bayes_factor( data_set_4 ) #  X log(BF)
+bf5 <- get_bayes_factor( data_set_5 ) #  X log(BF)
 
 # combine
 container1 <- rbind( bf1, bf2 )
