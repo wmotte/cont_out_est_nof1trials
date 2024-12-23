@@ -6,6 +6,7 @@
 ################################################################################
 library( 'readr' ) # read and write (large) tsv-files
 library( 'brms' )
+library( 'BAS' )
 
 # set readr progress bar to silent mode
 options( readr.show_progress = FALSE )

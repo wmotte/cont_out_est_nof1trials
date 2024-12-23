@@ -22,6 +22,7 @@ library( 'ggplot2' ) # plot
 library( 'rstanarm' ) # pre-compiled Bayesian models
 library( 'bayestestR' ) # ROPE function
 library( 'see' ) # plotting
+library( 'parameters' )
 
 # set readr progress bar to silent mode
 options( readr.show_progress = FALSE )
@@ -104,6 +105,7 @@ model <- NULL
 
 # first non-zero
 start_row <- 22
+end_row <- 85
 
 data <- df[1:344,]
 
@@ -152,12 +154,21 @@ p <- ggplot( data = all, aes( x = i, y = pd_treatment * 100 ) ) +
     scale_x_continuous( breaks = number_ticks( 16 ) ) +
     scale_y_continuous( breaks = number_ticks( 10 ) ) +
     theme_classic() +
-    coord_cartesian( expand = FALSE, xlim = c( 1, 86 ), ylim = c( 99, 101 ) ) +
+    coord_cartesian( expand = FALSE, xlim = c( 1, 86 ), ylim = c( 99, 100.3 ) ) +
     theme( legend.position = 'top', strip.text.x = element_text( face = 'bold' ), 
            strip.text.y = element_text( face = 'bold' ) )
 
+# remove y-axis information >100% (because not possible)
+p_clean <- p + scale_y_continuous(
+                breaks = seq( 99, 100, by = 0.1 ),  # Breaks only up to 100%
+                labels = function( x ) ifelse( x > 100, "", x ) ) # Remove labels above 100%
+
 # save
-ggsave( plot = p, file = paste0( outdir, '/plot_update_nicotine_PD.png' ), dpi = 600, height = 3, width = 6 )
+ggsave( plot = p_clean, file = paste0( outdir, '/plot_update_nicotine_PD.png' ), dpi = 600, height = 3, width = 6 )
+
+
+
+
 
 # Compute indices
 pd <- p_direction( model )
